@@ -1,5 +1,10 @@
 package ir.farshad;
 
+import org.postgresql.PGConnection;
+import org.postgresql.jdbc.PgConnection;
+
+import java.net.Socket;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -19,7 +24,5 @@ public class Main {
             }
             System.out.println();
         }
-
-
     }
 }

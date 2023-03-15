@@ -24,7 +24,11 @@ public class Bord {
 
     public boolean placeShip(int x, int y) throws OutOfBoard {
         if (x < 1 || y < 1 || x > bord.length || y > bord.length) throw new OutOfBoard();
-        if (bord[x][y] == 3) return false;
+        if (bord[x][y] == 3) try {
+            throw new ShiponShip();
+        } catch (ShiponShip e) {
+            throw new RuntimeException(e);
+        }
         bord[x][y] = 3;
         return true;
     }
@@ -36,25 +40,30 @@ public class Bord {
 
     public void automaticPlaceShips() {
         Random random = new Random();
-        int shipCount = (int) Math.ceil(size / 2);
+        int shipCount = (int) Math.ceil((double) size / 2);
         for (int i = 0; i < shipCount; i++) {
-            for (int j = shipCount - i; j > 0; j--) {
-                int x = random.nextInt(size);
-                int y = random.nextInt(size);
-                for (int k = 0; k <= i; k++) {
-                    try {
-                        if (random.nextInt(2) == 1) {
-                            while (!placeShip(x + k, y)) ;
-                        } else {
-                            while (!placeShip(x, y + k)) ;
-                        }
-                    } catch (OutOfBoard e) {
-                        //THIS CAN NEVER HAPPEN HERE
-
-                    }
+            int x = random.nextInt(size - 1 - (shipCount - i));
+            int y = random.nextInt(size);
+            int[] temp = new int[size];
+            if (random.nextInt(10) % 2 == 0) {
+                temp = bord[y];
+                for (int j = shipCount - i; j > 0; j--) {
+                    temp[x+j] = 3;
                 }
-
+            } else {
+                temp = getColumn(y);
+                for (int j = shipCount - i; j > 0; j--) {
+                    temp[x+j] = 3;
+                }
             }
         }
+    }
+
+    public int[] getColumn(int index) {
+        int[] column = new int[size]; // Here I assume a rectangular 2D array!
+        for (int i = 0; i < column.length; i++) {
+            column[i] = bord[i][index];
+        }
+        return column;
     }
 }
